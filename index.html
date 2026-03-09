@@ -3,408 +3,631 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>كتيب الدسباتش - النسخة الاحترافية</title>
+    <title> أكاديمية الصحة | EMS Academy</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;900&display=swap" rel="stylesheet">
     <style>
         :root {
-            --bg-color: #0f1113;
-            --book-bg: #202225;
-            --page-bg: #2f3136;
-            --text-color: #ffffff;
-            --primary-color: #588157;
-            --accent-red: #ff4d4d;
-            --spine-color: #18191c;
+            --primary: #5f8059; 
+            --secondary: #9fbf99; 
+            --bg-body: #121212; 
+            --bg-card: #1e1e1e; 
+            --text-main: #ecf0f1;
+            --border: #333;
+            --input-bg: #1e1e1e !important;
+            --danger: #dc3545;
+            --shadow: 0 8px 30px rgba(0,0,0,0.4);
         }
 
-        * { box-sizing: border-box; }
+        body.light-mode {
+            --bg-body: #f4f7f6;
+            --bg-card: #ffffff;
+            --text-main: #2c3e50;
+            --border: #d1d1d1;
+            --input-bg: #ffffff !important;
+        }
 
         body {
-            background-color: var(--bg-color);
-            color: var(--text-color);
-            font-family: 'Segoe UI', Tahoma, sans-serif;
+            font-family: 'Cairo', 'Segoe UI', Tahoma, sans-serif;
+            background-color: var(--bg-body);
+            color: var(--text-main);
             margin: 0;
             display: flex;
             flex-direction: column;
             align-items: center;
             justify-content: center;
-            height: 100vh;
-            overflow: hidden;
-            font-weight: 600;
-        }
-
-        .scene {
-            width: 95vw;
-            height: 90vh;
-            perspective: 3000px;
-            display: flex;
-            justify-content: flex-end; 
-            padding-right: 20px;
-        }
-
-        .book {
-            width: 45vw;
-            height: 100%;
-            position: relative;
-            transform-style: preserve-3d;
-        }
-
-        .page {
-            width: 100%;
-            height: 100%;
-            position: absolute;
-            top: 0;
-            right: 0;
-            transform-origin: right center;
-            transition: transform 1.2s cubic-bezier(0.645, 0.045, 0.355, 1);
-            transform-style: preserve-3d;
-            box-shadow: inset -5px 0px 30px rgba(0,0,0,0.5);
-            border-radius: 15px 5px 5px 15px;
-            z-index: 1;
-        }
-
-        .page-front, .page-back {
-            position: absolute;
-            width: 100%;
-            height: 100%;
-            padding: 45px;
-            backface-visibility: hidden;
-            overflow-y: auto;
-            border: 1px solid rgba(255,255,255,0.05);
-            background: var(--page-bg);
-            display: flex;
-            flex-direction: column;
-        }
-
-        .page-back {
-            transform: rotateY(-180deg);
-            background: var(--book-bg);
-            border-radius: 5px 15px 15px 5px;
-        }
-
-        .page.flipped {
-            transform: rotateY(180deg);
-        }
-
-        .spine {
-            position: absolute;
-            right: 0;
-            top: 0;
-            width: 35px;
-            height: 100%;
-            background: var(--spine-color);
-            z-index: 100;
-            border-radius: 0 10px 10px 0;
-            box-shadow: -5px 0 20px rgba(0,0,0,0.6);
-        }
-
-        /* أرقام الصفحات */
-        .page-number {
-            position: absolute;
-            bottom: 15px;
-            left: 20px;
-            font-size: 0.9rem;
-            color: var(--primary-color);
-            opacity: 0.7;
-        }
-        .page-back .page-number { left: auto; right: 20px; }
-
-        h2 { color: var(--primary-color); border-bottom: 2px solid var(--primary-color); padding-bottom: 10px; margin-top: 0; font-size: 2rem; }
-        .content { font-size: 1.3rem; line-height: 1.8; white-space: pre-line; flex-grow: 1; }
-        
-        .note-red { 
-            color: #ffffff; 
-            margin-top: 15px; 
-            padding: 15px; 
-            border: 2px solid var(--accent-red); 
-            border-radius: 12px; 
-            background: rgba(255, 77, 77, 0.15);
-            font-weight: 800;
-        }
-
-        .discord-block {
-            background: #000;
-            color: #00ff00;
-            padding: 15px;
-            border-radius: 10px;
-            font-family: 'Consolas', monospace;
-            margin: 10px 0;
-            font-size: 1.15rem;
-            border: 1px solid #333;
-        }
-
-        /* تنسيق الصور القابلة للتكبير */
-        .book-img {
-            width: 100%;
-            max-height: 250px;
-            object-fit: contain;
-            border-radius: 8px;
-            margin-top: 10px;
-            border: 2px solid #555;
-            cursor: zoom-in;
+            min-height: 100vh;
+            overflow-x: hidden;
             transition: 0.3s;
         }
-        .book-img:hover { border-color: var(--primary-color); }
 
-        /* نافذة التكبير (Modal) */
-        #imgModal {
-            display: none;
-            position: fixed;
-            z-index: 1000;
-            top: 0;
-            left: 0;
+        .announcement-bar {
             width: 100%;
-            height: 100%;
-            background: rgba(0,0,0,0.9);
-            justify-content: center;
-            align-items: center;
-        }
-        #imgModal img { max-width: 90%; max-height: 90%; border: 3px solid white; }
-        #imgModal .close { position: absolute; top: 20px; right: 30px; color: white; font-size: 40px; cursor: pointer; }
-
-        .controls {
-            position: absolute;
-            bottom: 20px;
-            display: flex;
-            gap: 20px;
-            z-index: 200;
-        }
-
-        .btn {
-            background: var(--primary-color);
-            color: white;
-            border: none;
-            padding: 12px 40px;
-            border-radius: 50px;
-            cursor: pointer;
+            background: #000;
+            color: var(--primary);
+            overflow: hidden;
+            position: fixed;
+            top: 0;
+            padding: 10px 0;
+            border-bottom: 2px solid var(--primary);
+            z-index: 999;
             font-weight: bold;
-            font-size: 1.1rem;
-            box-shadow: 0 5px 15px rgba(0,0,0,0.4);
-        }
-
-        .btn:disabled { background: #4f545c; opacity: 0.5; }
-
-        /* تنسيق الحقوق الجديد (هامش) */
-        .footer-rights {
-            margin-top: auto;
-            border-top: 1px solid rgba(255,255,255,0.1);
-            padding-top: 15px;
             text-align: center;
-            font-size: 0.85rem;
-            color: #888;
         }
-        .footer-rights a {
-            color: var(--primary-color);
-            text-decoration: none;
-            font-weight: bold;
-        }
-        .footer-rights a:hover { text-decoration: underline; }
 
+        .controls-nav {
+            position: fixed;
+            left: 20px;
+            top: 60px;
+            display: flex;
+            flex-direction: column; gap: 15px; z-index: 1001;
+        }
+
+        .nav-btn {
+            font-size: 1.4rem; 
+            color: var(--text-main); 
+            cursor: pointer;
+            background: var(--bg-card); 
+            border: 1px solid var(--border); 
+            padding: 8px;
+            border-radius: 10px;
+            transition: 0.3s;
+            box-shadow: var(--shadow);
+        }
+        
+        .nav-btn:hover { color: var(--primary); }
+
+        input, select, textarea {
+            width: 100%; 
+            padding: 12px; 
+            border-radius: 10px;
+            border: 1px solid var(--border) !important; 
+            background-color: var(--input-bg) !important; 
+            color: var(--text-main) !important; 
+            font-family: 'Cairo';
+            margin-bottom: 10px; 
+            outline: none;
+            box-sizing: border-box;
+            text-align: center;
+        }
+
+        .container {
+            background: var(--bg-card); padding: 30px; border-radius: 25px;
+            box-shadow: var(--shadow); width: 95%;
+            max-width: 420px; text-align: center; border: 1px solid var(--border); margin-top: 50px;
+        }
+
+        header {
+            display: flex; justify-content: space-between; align-items: center;
+            border-bottom: 2px solid var(--primary); padding-bottom: 15px; margin-bottom: 20px;
+        }
+
+        .logo-img { max-width: 90px; height: auto; }
+
+        .action-btn {
+            width: 100%; padding: 14px; background: var(--primary);
+            color: white; border: none; border-radius: 10px;
+            font-weight: bold; cursor: pointer; font-size: 1rem;
+            transition: 0.3s;
+        }
+        .action-btn:hover { opacity: 0.9; transform: translateY(-2px); }
+
+        .fp-wrapper {
+            position: relative; width: 100px; height: 100px;
+            margin: 20px auto; display: flex; align-items: center; justify-content: center; cursor: pointer;
+        }
+
+        .fingerprint-icon { font-size: 5rem; color: var(--border); transition: 0.5s; }
+
+        .scan-line {
+            position: absolute; top: 0; left: 0; width: 100%; height: 2px;
+            background: var(--primary); box-shadow: 0 0 15px var(--primary);
+            display: none; z-index: 10;
+        }
+
+        .fp-active .fingerprint-icon { color: var(--primary); text-shadow: 0 0 20px var(--primary); }
+        .fp-active .scan-line { display: block; animation: scanning 1s linear infinite; }
+
+        @keyframes scanning {
+            0% { top: 0; } 50% { top: 100%; } 100% { top: 0; }
+        }
+
+        .success-msg { color: var(--primary); font-weight: bold; margin-top: 10px; font-size: 0.9rem; display: none; }
+
+        .links-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+        .nav-item {
+            background: rgba(95, 128, 89, 0.1); border: 1px solid var(--border);
+            padding: 12px 5px; border-radius: 15px; color: var(--text-main);
+            text-decoration: none; font-size: 0.85rem; font-weight: bold;
+            display: flex; flex-direction: column; gap: 6px; align-items: center; transition: 0.3s;
+        }
+        .nav-item:hover { border-color: var(--primary); transform: scale(1.02); }
+        .nav-item i { color: var(--primary); font-size: 1.2rem; }
+
+        .modal-overlay {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0,0,0,0.85); backdrop-filter: blur(5px);
+            display: none; justify-content: center; align-items: center; z-index: 3000;
+        }
+
+        .modal-content {
+            width: 90%; max-width: 500px; max-height: 85vh;
+            background: var(--bg-card); border: 2px solid var(--primary);
+            border-radius: 20px; padding: 25px; overflow-y: auto; position: relative;
+        }
+
+        #onlineList {
+            position: fixed; right: 20px; top: 60px; width: 160px;
+            background: var(--bg-card); border: 1px solid var(--border);
+            border-right: 4px solid var(--primary); border-radius: 10px;
+            padding: 10px; font-size: 0.8rem; z-index: 100; box-shadow: var(--shadow);
+        }
+
+        .user-card {
+            background: rgba(255,255,255,0.05); border: 1px solid var(--border);
+            padding: 12px; border-radius: 12px; margin-bottom: 10px;
+            display: flex; justify-content: space-between; align-items: center; text-align: right;
+        }
+
+        .hidden { display: none !important; }
+        .footer { margin-top: 25px; padding-top: 15px; border-top: 1px solid var(--border); font-size: 0.75rem; color: #888; }
+        .footer strong { color: var(--primary); }
+        
+        #wingsMenu, #applyWingsMenu, #presidencyMenu { background: rgba(0,0,0,0.2); padding: 10px; border-radius: 15px; border: 1px dashed var(--primary); }
+        
+        .admin-control-item {
+            background: rgba(255,255,255,0.05);
+            padding: 15px;
+            border-radius: 12px;
+            margin-bottom: 15px;
+            text-align: right;
+            border: 1px solid var(--border);
+            border-right: 4px solid var(--primary);
+            transition: 0.3s;
+        }
+        .admin-control-item:hover { transform: translateX(-5px); }
+        
+        .admin-control-item label { display: block; font-size: 0.8rem; margin-top: 10px; margin-bottom: 5px; color: var(--primary); font-weight: bold; }
+        
+        .admin-control-item input[type="datetime-local"] { 
+            font-size: 0.85rem; 
+            padding: 10px; 
+            background: var(--bg-body) !important;
+            border: 1px solid var(--border) !important;
+            cursor: pointer;
+            appearance: none;
+            -webkit-appearance: none;
+        }
+
+        ::-webkit-calendar-picker-indicator {
+            filter: invert(0.5) sepia(1) saturate(5) hue-rotate(60deg);
+            cursor: pointer;
+        }
+
+        .status-toggle {
+            display: flex;
+            background: #333;
+            border-radius: 8px;
+            overflow: hidden;
+            width: 100px;
+            height: 30px;
+        }
+        .status-toggle button {
+            flex: 1;
+            border: none;
+            cursor: pointer;
+            font-family: 'Cairo';
+            font-weight: bold;
+            font-size: 0.7rem;
+            transition: 0.3s;
+            color: #fff;
+            background: transparent;
+        }
+        .status-toggle .btn-on.active { background: var(--primary); }
+        .status-toggle .btn-off.active { background: var(--danger); }
+
+        .admin-long-btn {
+            grid-column: span 2;
+            background: rgba(95, 128, 89, 0.2) !important;
+            border: 2px solid var(--primary) !important;
+            color: var(--primary) !important;
+            font-size: 1rem !important;
+            padding: 15px !important;
+        }
     </style>
 </head>
 <body>
 
-<div id="imgModal">
-    <span class="close" onclick="closeModal()">&times;</span>
-    <img id="modalImg">
+<div class="announcement-bar">
+    <div class="marquee-content" id="newsContent">مرحباً بكم في أكاديمية الصحة</div>
 </div>
 
-<div class="scene">
-    <div class="book">
-        <div class="spine"></div>
+<div class="controls-nav">
+    <button id="settingsBtn" class="nav-btn hidden" onclick="openAdminModal()"><i class="fas fa-user-gear"></i></button>
+    <button class="nav-btn" onclick="toggleTheme()"><i class="fas fa-circle-half-stroke"></i></button>
+</div>
+
+<div id="adminModal" class="modal-overlay" onclick="closeModalOutside(event)">
+    <div class="modal-content">
+        <h3 style="color: var(--primary); text-align: center; margin-top:0;">إدارة النظام</h3>
         
-<div class="page" id="p1" style="z-index: 7;">
-            <div class="page-front" style="display:flex; flex-direction:column; justify-content:center; align-items:center; background: linear-gradient(135deg, #1e2b1e 0%, #2f3136 100%);">
-                <img src="https://www2.0zz0.com/2025/12/22/17/297618659.png" style="max-width: 180px; margin-bottom: 10px;">
-                <h2 style="border:none; margin:0; font-size: 1.5rem;">EMS Academy</h2>
-                <h1 style="color:var(--primary-color); font-size: 2rem; text-align: center; margin: 10px 0;">Dispatch HandBook</h1>
-                <div class="divider"></div>
-                <p style="font-size: 1.4rem; text-align: center;">كتيب تدريب وينق الدسباتش</p>
-                <div style="margin-top:30px; border:1px solid #666; padding:10px 20px; border-radius:30px;">اضغط على التالي للبدء ⬅️</div>
-                <div class="page-number">1</div>
-            </div>
-            <div class="page-back">
-                <h2>تعريف الوينق</h2>
-                <div class="content">هي شهادة لقدرتك في فحص الرهائن في حالات السرقات و تحصل على أولوية في مباشرة حالات الاختطاف الرهائن</div>
-                <div class="page-number">2</div>
-            </div>
+        <div id="adminTabs">
+            <button class="action-btn" onclick="toggleAdminTab('trainers')">إدارة الحسابات</button>
+            <button class="action-btn" style="margin-top:10px; background:#444;" onclick="toggleAdminTab('wingsSettings')">إدارة الونقات</button>
         </div>
 
-        <div class="page" id="p2" style="z-index: 6;">
-            <div class="page-front">
-                <h2> قوانين الدسباتش</h2>
-                <div class="content" style="font-size: 1.1rem;">
-- توزيع الوحدات على احتياج الميدان للوينقات والتوزيع الصحيح
-- تعيين نائب دسباتش والحرص على وجوده بشكل مستمر من 20 الى 30 دقيقه
-- صرف عموم الوحدات من المستشفى والتأكد من عدم وجود اي وحده بالمستشفى باستثناء 0-1 و قطاع الEMs
-- تنظيم الراديو والجديه في ارسال البلاغات والحرص على عدم مقاطعة البلاغات
-- عدم ذكر اي اسم بالراديو ويكون توجيه البلاغات باليونت فقط
-- تعيين كوماندر والحرص على وجوده بشكل مستمر من 20 الى 30 دقيقه
-- يمنع منعًا باتا مباشرة مسعفين مع بعض بدون اي سبب
-- يجب عليك قبل توجيه شخص لحالة سرقة تاكد في حال حامل وينق (HC)
-- يمنع منعًا باتا توجيه مدرب في حال كان مشرف شخص فقط توجه الشخص الي معاه
-                </div>
-                <div class="page-number">3</div>
-            </div>
-            <div class="page-back">
-                <h2>نائب الدسباتش</h2>
-                <div class="content">
-الرد البلاغات بعد خمس ثواني من عدم استجابة الدسباتش
-التركيز على بلاغات ال 997والرد عليها بشكل مباشر
-الرد على اتصالات
-
-<div class="note-red">ملاحظة : في حال خالفت احد القوانين يتم استدعائك عليها .</div>
-                </div>
-                <div class="page-number">4</div>
-            </div>
+        <div id="trainersTab">
+            <h4 style="margin-top:20px;">إضافة/تعديل حساب</h4>
+            <input type="text" id="addUsername" placeholder="اسم المستخدم" autocomplete="off">
+            <input type="password" id="addPassword" placeholder="كلمة المرور" autocomplete="off">
+            <input type="text" id="addDisplayName" placeholder="الاسم الظاهر" autocomplete="off">
+            <select id="addRole">
+                <option value="trainer">مدرب</option>
+                <option value="student">مستجد / متدرب</option>
+                <option value="admin">admin</option>
+            </select>
+            <button class="action-btn" onclick="addNewTrainer()">حفظ الحساب</button>
+            <h4 style="border-bottom: 1px solid var(--border); padding-bottom: 10px; margin-top: 25px;">قائمة الأعضاء:</h4>
+            <div id="adminTrainersList"></div>
         </div>
 
-        <div class="page" id="p3" style="z-index: 5;">
-            <div class="page-front">
-                <h2>تعليمات هامة</h2>
-                <div class="content" style="font-size:0.95rem;">
-- في حالات السرقات يجب عليك توجيه الاشخاص الحاملين وينق HC وفي حال عدم توفر احد حامل الوينق قم بتوجيه احد المسعفين.
-- تهربك من استلام الديسباتش يعرضك للمحاسبة على بند 6-1 + سحب وينق الديسباتش.
-- يمنع خروج الدسباتش من المستشفى الا في حالتين بعد اخذ اذن الكوماند وهي الذهاب للمطعم او الورشه كذلك مباشرة الميدان في حال عدم توفر عدد وحدات كافي
-
-
-- عند توزيعك لوحدات ونق الايرشب يجب توجيه وحدات حاملين للونق كذلك عليك الالتزام بالعدد المسموح لك استخراجه وهو كالتالي:
-في حال وجود 4 وحدات او أقل : 1 ايرشب
-في حال وجود 5 وحدات : 2 ايرشب
-في حال وجود من 6 الى 10 وحدات : من 3الى 4 ايرشب
-في حال وجود 11 وحده الى 15: من 4 الى 5 ايرشب
-مع زيادة 5 وحدات يتم اضافة 2 ايرشب اخرى
-في حال احتياج الميدان اكثر من العدد المسموح يجب عليك اخذ اذن من مسؤول الفتره (Commander)
-
-<div class="note-red">ملاحظة : في حال خالفت احد القوانين يتم استدعائك عليها</div>
-                </div>
-                <div class="page-number">5</div>
-            </div>
-            <div class="page-back">
-                <h2> تقرير الدسباتش</h2>
-                <div class="content" style="font-size:1rem;">
-عند استلامك للدسباتش يجب عليك رفع تقرير استلامك في دسكورد الاكاديمية في الروم المخصص له.
-<div class="discord-block">
-CO : كود مسؤول الفترة 
-DC : كود الدسباتش
-VIS : كود نائب الدسباتش
-Picture of EmsList: وضع صورة لقائمة الوحدات المتواجدة
-</div>
-وفي حال انتهيت من الدسباتش تقوم فقط بارسال:
-    End to (كود المسعف الذي سلمت له الدسباتش)
-مثال للتوضيح (اضغط للتكبير):
-<img src="images/report.png" class="book-img" onclick="openModal(this.src)">
-                </div>
-                <div class="page-number">6</div>
-            </div>
+        <div id="wingsSettingsTab" class="hidden">
+            <h4 style="margin-top:20px;">فتح / اغلاق التقديم</h4>
+            <div id="wingsControlsContainer"></div>
+            <button class="action-btn" style="background:#444" onclick="toggleAdminTab('trainers')">العودة</button>
         </div>
-
-        <div class="page" id="p4" style="z-index: 4;">
-            <div class="page-front">
-                <h2>التوزيع الميداني</h2>
-                <div class="content" style="font-size:1rem;">
-عند توزيعك للوحدات في الميدان يجب ارسال التوزيع الميداني في دسكورد الاكاديمية.
-<div class="discord-block">
-E1 - H
-E2 - H 
-E3 - A
-E4 - B
-E5 - c
-E6 - E
-E7 - AIR
-</div>
-حرف H بمعنى توجية الشخص داخل المستشفى (Hospital).
-<div class="note-red">وفي حال غيرت توجية شخص او اضفت شخص جديد فقط عدل على الرسالة</div>
-مثال للتوضيح (اضغط للتكبير):
-<img src="images/field.png" class="book-img" onclick="openModal(this.src)">
-                </div>
-                <div class="page-number">7</div>
-            </div>
-            <div class="page-back">
-                <div style="text-align:center; flex-grow:1; display:flex; flex-direction:column; justify-content:center;">
-                    <h1 style="color:var(--primary-color); margin:0;">Ministry of Health</h1>
-                    <div style="margin-top:20px; line-height:1.8;">
-                        <p>EMS Academy Commander: Rema Alkhaldi</p>
-                        <p>EMS Academy Deputy: Mohammed Abdullah</p>
-                        <p>Supervisor Of EMS Academy: Jory Walton</p>
-                        <p>ALL EMS FTO</p>
-                    </div>
-                </div>
-
-                <div class="footer-rights">
-                    الحقوق محفوظة لوزارة الصحة في سيرفر MT <br>
-                    اعداد نودي | برمجة وتطوير <a href="https://discord.com/users/YOUR_DISCORD_ID" target="_blank">Ali_go</a>
-                </div>
-                <div class="page-number">8</div>
-            </div>
-        </div>
-
     </div>
 </div>
 
-<div class="controls">
-    <button class="btn" id="prevBtn" onclick="prevPage()" disabled>السابق</button>
-    <button class="btn" id="nextBtn" onclick="nextPage()">التالي</button>
+<div id="onlineList" class="hidden">
+    <div style="color: var(--primary); font-weight: bold; margin-bottom: 5px;">المتصلين: <span id="userCount">0</span></div>
+    <div id="trainersContainer"></div>
 </div>
 
-<script>
-    let currentLoc = parseInt(localStorage.getItem('book_page')) || 1;
-    let numOfPapers = 4;
-    let maxLoc = numOfPapers + 1;
+<div class="container">
+    <header>
+        <img src="https://www2.0zz0.com/2025/12/22/17/297618659.png" class="logo-img">
+        <div style="text-align:left">
+            <h2 style="margin:0; font-size:1.1rem; letter-spacing: 1px;">Ministry Of Health</h2>
+            <span style="color:var(--primary); font-weight: bold; font-size:0.8rem;">EMS Academy</span>
+        </div>
+    </header>
 
-    // استعادة الصفحة عند التحميل
-    window.onload = function() {
-        for(let i = 1; i < currentLoc; i++) {
-            const page = document.getElementById(`p${i}`);
-            page.classList.add("flipped");
-            page.style.zIndex = i;
-        }
-        updateButtons();
+    <div id="loginScreen" class="hidden">
+        <input type="text" id="userInput" placeholder="اسم المستخدم" autocomplete="off">
+        <div style="position:relative;">
+            <input type="password" id="passInput" placeholder="كلمة المرور" autocomplete="off">
+            <i class="fa-solid fa-eye" style="position:absolute; left:15px; top:15px; color:var(--primary); cursor:pointer;" onclick="togglePass('passInput')"></i>
+        </div>
+        <div id="errorMsg" style="color:var(--danger); display:none; margin-bottom:10px; font-size: 0.8rem;">بيانات الدخول غير صحيحة</div>
+        <button class="action-btn" onclick="checkCredentials()">دخول</button>
+    </div>
+
+    <div id="fingerprintScanner" class="hidden">
+        <div class="fp-wrapper" id="fpWrapper" onclick="verifyFingerprint()">
+            <div class="scan-line"></div>
+            <i class="fas fa-fingerprint fingerprint-icon"></i>
+        </div>
+        <p id="fpText">ضع بصمتك للتحقق</p>
+        <p id="fpStatus" class="success-msg"></p>
+    </div>
+
+    <div id="dashboard" class="hidden">
+        <p id="welcomeMsg" style="font-weight:900; color:var(--primary); margin-bottom:20px;"></p>
+        <div class="links-grid" id="mainLinks">
+            <button id="presidencyBtn" class="nav-item admin-long-btn hidden" onclick="document.getElementById('presidencyMenu').classList.toggle('hidden')">
+                <i class="fas fa-crown"></i> رئاسة الأكاديمية
+            </button>
+            <div id="presidencyMenu" class="hidden admin-long-btn" style="grid-column: span 2; display:grid; grid-template-columns: 1fr 1fr; gap:8px; margin-bottom: 10px;">
+                <a href="https://docs.google.com/spreadsheets/d/154YFMNveUcoTXQO6DFToyVTtopikL3uk3pnfJvpnS_A/edit?usp=sharing" target="_blank" class="nav-item">جدول الرئاسة</a>
+                <a href="https://aahaji-110.github.io/report/" target="_blank" class="nav-item">تقرير دفعة جديدة</a>
+                <a href="https://docs.google.com/spreadsheets/d/1QbDjcBFVVeNtJSiG6IxD4Ts1oWWXkc8ZMzg3OTpK0Cw/edit?gid=407010288#gid=407010288" target="_blank" class="nav-item">جدول القبول</a>
+            </div>
+
+            <a href="https://docs.google.com/spreadsheets/d/1VZDoNKXsIJ1BDPNsg-7KEO35KACeVDF0WjyJR8L9Kxo/edit?gid=1567011153" target="_blank" class="nav-item"><i class="fas fa-file-medical"></i> جدول الصحة</a>
+            <a href="https://docs.google.com/spreadsheets/d/1QnZwyL7QAKPRbGWGymPVUnykrRKifrqkDov_BSBrqmc/edit?gid=417080479#gid=417080479" target="_blank" class="nav-item trainer-only"><i class="fas fa-calendar-alt"></i> جدول الأكاديمية</a>
+            <a href="https://aahaji-110.github.io/logs/" target="_blank" class="nav-item trainer-only"><i class="fas fa-clipboard-list"></i> أعمال الأكاديمية</a>
+            <a href="https://aahaji-110.github.io/exam/" target="_blank" class="nav-item trainer-only"><i class="fas fa-user-md"></i> كتيب المدرب</a>
+            <a href="https://docs.google.com/forms/d/e/1FAIpQLSfavPU6RuT53HnY-CpZD4sdV4YxRm18uQU6xKu3G_WqHQ0QLg/viewform" target="_blank" class="nav-item trainer-only"><i class="fas fa-plane-departure"></i> الإجازات</a>
+            <a href="https://docs.google.com/forms/d/e/1FAIpQLSctwj3gykTadrjCyhUP8Fe4bso3jPzIjhOvfqJcfe_zEcBodA/viewform" target="_blank" class="nav-item trainer-only"><i class="fas fa-user-slash"></i> الاستقالة</a>
+            <a href="https://forms.gle/rGxpcfActafsrcmB9" target="_blank" class="nav-item trainer-only"><i class="fas fa-star"></i> نتائج الونقات</a>
+            <a href="https://docs.google.com/forms/d/e/1FAIpQLSeRQwKDFhx8_tiQvw4cVYFUY4r30DhLnfwhFGUfBiMyQ5BZdQ/viewform" target="_blank" class="nav-item trainer-only"><i class="fas fa-file-upload"></i> التقارير</a>
+            
+            <button class="nav-item trainer-only" style="cursor:pointer; background:rgba(95,128,89,0.1); width:100%; font-family:'Cairo'; border:1px solid var(--border);" onclick="document.getElementById('wingsMenu').classList.toggle('hidden')">
+                <i class="fas fa-shield-halved"></i> كتيب الونقات
+            </button>
+            <button class="nav-item" style="cursor:pointer; background:rgba(95,128,89,0.1); width:100%; font-family:'Cairo'; border:1px solid var(--border);" onclick="document.getElementById('applyWingsMenu').classList.toggle('hidden')">
+                <i class="fas fa-id-card"></i> التقديم على الونقات
+            </button>
+        </div>
+
+        <div id="wingsMenu" class="hidden trainer-only" style="display:grid; grid-template-columns: repeat(3, 1fr); gap:8px; margin-top:10px;">
+            <a href="https://aahaji-110.github.io/DS/" target="_blank" class="nav-item">DC</a>
+            <a href="https://aahaji-110.github.io/HC/" target="_blank" class="nav-item">HC</a>
+            <a href="https://aahaji-110.github.io/IAC-OAC/" target="_blank" class="nav-item">IAC</a>
+            <a href="https://aahaji-110.github.io/co/" target="_blank" class="nav-item">CO</a>
+            <a href="https://aahaji-110.github.io/airship/" target="_blank" class="nav-item">AIR</a>
+        </div>
+
+        <div id="applyWingsMenu" class="hidden" style="display:grid; grid-template-columns: repeat(2, 1fr); gap:8px; margin-top:10px;"></div>
+
+        <button class="action-btn" style="background: var(--primary); margin-top:20px; font-size:0.8rem;" onclick="logout()">تسجيل الخروج</button>
+    </div>
+
+    <div class="footer">
+        بوابة الاكاديمية الرقمية | الحقوق محفوظة لـ: <strong>علي الحاجي</strong> <br>
+        الدسكورد <strong>ali_go</strong>
+    </div>
+</div>
+
+<script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
+    import { getDatabase, ref, set, push, onValue, onDisconnect, remove, get, update } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-database.js";
+
+    const firebaseConfig = {
+        apiKey: "AIzaSyBx7cT-Ku9miRSJxoL-qFcVraU69t0kl1o",
+        authDomain: "ems-academy-gate.firebaseapp.com",
+        databaseURL: "https://ems-academy-gate-default-rtdb.firebaseio.com",
+        projectId: "ems-academy-gate",
+        storageBucket: "ems-academy-gate.firebasestorage.app",
+        messagingSenderId: "686866880902",
+        appId: "1:686866880902:web:d1a239e5776da47604b407"
     };
 
-    function nextPage() {
-        if(currentLoc < maxLoc) {
-            const page = document.getElementById(`p${currentLoc}`);
-            page.classList.add("flipped");
-            page.style.zIndex = currentLoc;
-            currentLoc++;
-            savePage();
-            updateButtons();
+    const app = initializeApp(firebaseConfig);
+    const db = getDatabase(app);
+    let sessionUser = null;
+
+    const WINGS_DATA = [
+        { id: 'group1', label: 'IAC & OAC & DC & HC', links: { 
+            IAC: 'https://docs.google.com/forms/d/e/1FAIpQLSfizKRLhKSObaMSVVhZSbkl2GupXNQwVoyiHAMPMzU7CLyBlA/viewform',
+            OAC: 'https://docs.google.com/forms/d/e/1FAIpQLSeZo0MSwFoHUdQlRj7elS_EeQj0B9tY8PI3IiiO8NCheE6Ekg/viewform',
+            DC: 'https://docs.google.com/forms/d/e/1FAIpQLSc4FTnnnquAv7mvmv3J8w9Zds2Wk0k7Mo4EUqUYoyzIaCNMVQ/viewform',
+            HC: 'https://docs.google.com/forms/d/e/1FAIpQLSeD3nhGotsmkt82nxqR7RV--bGZUxo9cTtdRHxuMB1duesvSg/viewform'
+        }},
+        { id: 'airship', label: 'Airship', link: 'https://docs.google.com/forms/d/e/1FAIpQLSfCS4fFYmKvnUxxS8JshMP7zusP8lfxEJcxyfT8sHQU0zG9Bg/viewform' },
+        { id: 'frd', label: 'FRD', link: 'https://docs.google.com/forms/d/e/1FAIpQLSfLzjJzM1a1hXw91SJtRas5EikWzlUpy07WXokXB18_Kg0e2A/viewform' },
+        { id: 'ds', label: 'DS', link: 'https://docs.google.com/forms/d/e/1FAIpQLSczj3qy-oeYAqb90mZCquKp3qTX7EQC9ZnruJAsHkEBH6ebcw/viewform' },
+        { id: 'co', label: 'CO', link: 'https://docs.google.com/forms/d/e/1FAIpQLSdp5n8z49IC-MItmiGvt0heFhPga8s-oFPnzZJjGb6zdwdIJw/viewform' },
+        { id: 'fto', label: 'FTO', link: 'https://docs.google.com/forms/d/e/1FAIpQLSdb-YMB3SZWplbmzkEb260X2hOFTZ-vIdhSoenaUhZ7a8XXVA/viewform' }
+    ];
+
+    window.toggleTheme = () => {
+        document.body.classList.toggle('light-mode');
+        localStorage.setItem('theme', document.body.classList.contains('light-mode') ? 'light' : 'dark');
+    };
+
+    window.togglePass = (id) => {
+        const p = document.getElementById(id);
+        p.type = p.type === "password" ? "text" : "password";
+    };
+
+    window.toggleAdminTab = (tab) => {
+        document.getElementById('trainersTab').classList.toggle('hidden', tab !== 'trainers');
+        document.getElementById('wingsSettingsTab').classList.toggle('hidden', tab !== 'wingsSettings');
+        if (tab === 'wingsSettings') loadWingsAdminControls();
+    };
+
+    window.checkCredentials = async function() {
+        const u = document.getElementById('userInput').value.toLowerCase().trim();
+        const p = document.getElementById('passInput').value;
+        if(!u || !p) return;
+        
+        const snap = await get(ref(db, 'users/' + u));
+        if (snap.exists() && snap.val().password === p) {
+            sessionUser = { username: u, displayName: snap.val().displayName, role: snap.val().role };
+            document.getElementById('loginScreen').classList.add('hidden');
+            document.getElementById('fingerprintScanner').classList.remove('hidden');
+        } else { 
+            document.getElementById('errorMsg').style.display = 'block'; 
         }
+    };
+
+    window.verifyFingerprint = () => {
+        const wrapper = document.getElementById('fpWrapper');
+        const text = document.getElementById('fpText');
+        const status = document.getElementById('fpStatus');
+        wrapper.classList.add('fp-active');
+        text.innerText = "جاري مطابقة الهوية...";
+        setTimeout(() => {
+            wrapper.classList.remove('fp-active');
+            text.classList.add('hidden');
+            status.style.display = "block";
+            status.innerText = "تم التأكد من الهوية: " + sessionUser.displayName;
+            setTimeout(() => {
+                logActivity(sessionUser.username, sessionUser.displayName);
+                completeLogin(sessionUser);
+            }, 800);
+        }, 1500);
+    };
+
+    function logActivity(u, n) {
+        push(ref(db, 'logs'), { 
+            user: u, 
+            name: n, 
+            time: new Date().toLocaleString('ar-SA'), 
+            device: /Mobi|Android/i.test(navigator.userAgent) ? "جوال" : "كمبيوتر" 
+        });
     }
 
-    function prevPage() {
-        if(currentLoc > 1) {
-            currentLoc--;
-            const page = document.getElementById(`p${currentLoc}`);
-            page.classList.remove("flipped");
-            page.style.zIndex = (numOfPapers - currentLoc) + 10;
-            savePage();
-            updateButtons();
+    function completeLogin(user) {
+        localStorage.setItem('ems_user', user.username);
+        document.getElementById('fingerprintScanner').classList.add('hidden');
+        document.getElementById('welcomeMsg').innerText = "مرحباً بك: " + user.displayName;
+        document.getElementById('dashboard').classList.remove('hidden');
+        document.getElementById('onlineList').classList.remove('hidden');
+
+        const isStudent = user.role === "student";
+        document.querySelectorAll('.trainer-only').forEach(el => el.classList.toggle('hidden', isStudent));
+        if (!isStudent) document.getElementById('wingsMenu').classList.add('hidden');
+        
+        // تعديل: التحكم في زر الرئاسة والقائمة التابعة له
+        const isPresidency = user.role === "admin";
+        document.getElementById('presidencyBtn').classList.toggle('hidden', !isPresidency);
+        if(!isPresidency) document.getElementById('presidencyMenu').classList.add('hidden');
+
+        if (user.role === "admin" || user.username === "ali_go") {
+            document.getElementById('settingsBtn').classList.remove('hidden');
+            loadTrainersList();
         }
+
+        setupOnlineStatus(user);
+        listenToWingsSettings();
     }
 
-    function savePage() { localStorage.setItem('book_page', currentLoc); }
-
-    function updateButtons() {
-        document.getElementById('prevBtn').disabled = (currentLoc === 1);
-        document.getElementById('nextBtn').disabled = (currentLoc === maxLoc);
+    function setupOnlineStatus(user) {
+        const sRef = ref(db, 'online_trainers/' + user.username);
+        set(sRef, { name: user.displayName });
+        onDisconnect(sRef).remove();
+        onValue(ref(db, 'online_trainers'), (s) => {
+            const container = document.getElementById('trainersContainer'); 
+            container.innerHTML = "";
+            let count = 0;
+            s.forEach(c => {
+                container.innerHTML += `<div style="margin-bottom:5px;"><span style="color: #2ecc71; margin-left: 5px;">●</span>${c.val().name}</div>`;
+                count++;
+            });
+            document.getElementById('userCount').innerText = count;
+        });
     }
 
-    // دوال تكبير الصور
-    function openModal(src) {
-        document.getElementById("imgModal").style.display = "flex";
-        document.getElementById("modalImg").src = src;
+    function loadWingsAdminControls() {
+        const container = document.getElementById('wingsControlsContainer');
+        container.innerHTML = "جاري التحميل...";
+        
+        get(ref(db, 'wings_settings')).then((snap) => {
+            const settings = snap.val() || {};
+            container.innerHTML = "";
+            WINGS_DATA.forEach(wing => {
+                const wingSet = settings[wing.id] || { active: false, start: '', end: '' };
+                const div = document.createElement('div');
+                div.className = 'admin-control-item';
+                div.innerHTML = `
+                    <div style="display:flex; justify-content:space-between; align-items:center;">
+                        <strong>${wing.label}</strong>
+                        <div class="status-toggle">
+                            <button class="btn-on ${wingSet.active ? 'active' : ''}" onclick="updateWingStatus('${wing.id}', true)">ON</button>
+                            <button class="btn-off ${!wingSet.active ? 'active' : ''}" onclick="updateWingStatus('${wing.id}', false)">OFF</button>
+                        </div>
+                    </div>
+                    <label>وقت البدء:</label>
+                    <input type="datetime-local" id="start_${wing.id}" value="${wingSet.start || ''}" onchange="updateWingTime('${wing.id}', 'start', this.value)">
+                    <label>وقت الانتهاء:</label>
+                    <input type="datetime-local" id="end_${wing.id}" value="${wingSet.end || ''}" onchange="updateWingTime('${wing.id}', 'end', this.value)">
+                `;
+                container.appendChild(div);
+            });
+        });
     }
-    function closeModal() {
-        document.getElementById("imgModal").style.display = "none";
+
+    window.updateWingStatus = (id, val) => { 
+        update(ref(db, `wings_settings/${id}`), { active: val }).then(() => loadWingsAdminControls());
+    };
+    window.updateWingTime = (id, type, val) => { 
+        let obj = {}; obj[type] = val; 
+        update(ref(db, `wings_settings/${id}`), obj); 
+    };
+
+    function listenToWingsSettings() {
+        onValue(ref(db, 'wings_settings'), (snap) => {
+            const settings = snap.val() || {};
+            const menu = document.getElementById('applyWingsMenu');
+            menu.innerHTML = "";
+            const now = Date.now();
+
+            WINGS_DATA.forEach(wing => {
+                const wingSet = settings[wing.id];
+                if (wingSet && wingSet.active) {
+                    const startTime = wingSet.start ? new Date(wingSet.start).getTime() : 0;
+                    const endTime = wingSet.end ? new Date(wingSet.end).getTime() : Infinity;
+
+                    if (now >= startTime && now <= endTime) {
+                        if (wing.id === 'group1') {
+                            Object.entries(wing.links).forEach(([name, url]) => {
+                                menu.innerHTML += `<a href="${url}" target="_blank" class="nav-item">${name}</a>`;
+                            });
+                        } else {
+                            menu.innerHTML += `<a href="${wing.link}" target="_blank" class="nav-item">${wing.label}</a>`;
+                        }
+                    }
+                }
+            });
+            if(menu.innerHTML === "") menu.innerHTML = "<p style='grid-column:span 2; font-size:0.8rem; color:#888;'>لا توجد تقديمات متاحة حالياً</p>";
+        });
     }
+
+    function loadTrainersList() {
+        onValue(ref(db, 'users'), (snap) => {
+            const listDiv = document.getElementById('adminTrainersList');
+            listDiv.innerHTML = "";
+            snap.forEach((child) => {
+                const data = child.val();
+                listDiv.innerHTML += `
+                <div class="user-card">
+                    <div><strong>${data.displayName}</strong><br><small style="color:var(--primary)">${child.key} | ${data.role}</small></div>
+                    <div>
+                        <i class="fas fa-edit" style="color:var(--primary); cursor:pointer; margin-left:15px;" onclick="fillTrainerData('${child.key}', '${data.password}', '${data.displayName}', '${data.role}')"></i>
+                        <i class="fas fa-trash" style="color:var(--danger); cursor:pointer;" onclick="deleteUser('${child.key}')"></i>
+                    </div>
+                </div>`;
+            });
+        });
+    }
+
+    window.addNewTrainer = () => {
+        const u = document.getElementById('addUsername').value.toLowerCase().trim();
+        const p = document.getElementById('addPassword').value;
+        const d = document.getElementById('addDisplayName').value;
+        const r = document.getElementById('addRole').value;
+        if(u && p && d) {
+            set(ref(db, 'users/' + u), { password: p, displayName: d, role: r })
+            .then(() => {
+                document.getElementById('addUsername').value = "";
+                document.getElementById('addPassword').value = "";
+                document.getElementById('addDisplayName').value = "";
+            });
+        }
+    };
+
+    window.fillTrainerData = (u, p, d, r) => {
+        document.getElementById('addUsername').value = u;
+        document.getElementById('addPassword').value = p;
+        document.getElementById('addDisplayName').value = d;
+        document.getElementById('addRole').value = r;
+    };
+
+    window.deleteUser = (u) => { if(confirm("حذف " + u + "؟")) remove(ref(db, 'users/' + u)); };
+
+    window.logout = () => {
+        const saved = localStorage.getItem('ems_user');
+        if(saved) remove(ref(db, 'online_trainers/' + saved));
+        localStorage.clear();
+        location.reload();
+    };
+
+    window.openAdminModal = () => document.getElementById('adminModal').style.display = 'flex';
+    window.closeModalOutside = (e) => { if(e.target.id === 'adminModal') document.getElementById('adminModal').style.display = 'none'; };
+
+    onValue(ref(db, 'announcements'), (s) => {
+        let text = ""; s.forEach(c => { text += " • " + c.val(); });
+        document.getElementById('newsContent').innerText = text || "مرحباً بكم في أكاديمية الصحة";
+    });
+
+    window.onload = async () => {
+        if(localStorage.getItem('theme') === 'light') document.body.classList.add('light-mode');
+        const saved = localStorage.getItem('ems_user');
+        if(saved) {
+            const snap = await get(ref(db, 'users/' + saved));
+            if(snap.exists()) {
+                completeLogin({ username: saved, displayName: snap.val().displayName, role: snap.val().role });
+            } else {
+                localStorage.clear();
+                document.getElementById('loginScreen').classList.remove('hidden');
+            }
+        } else {
+            document.getElementById('loginScreen').classList.remove('hidden');
+        }
+    };
 </script>
-
 </body>
-
 </html>
-
-
-
-
-
-
